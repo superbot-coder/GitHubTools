@@ -50,7 +50,7 @@ Type
     constructor Create;
     destructor Destroy; override;
     function Get: IFoundResponse;
-    class function New: TRepositoriesFinder;
+    class function New: IRepositoriesFinder;
   end;
 
 implementation
