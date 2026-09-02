@@ -36,7 +36,6 @@ type
     function UserAgent(const AUserAgent: string): IRepositoriesFinder;
   end;
 
-
 implementation
 
 end.
