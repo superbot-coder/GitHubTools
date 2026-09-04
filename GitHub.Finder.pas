@@ -33,11 +33,9 @@ Type
   private
     FBeginDate: string;
     FEndDate: string;
-    FToken: string;
     FLanguage: string;
     FRESTClient: TRESTClient;
     FRESTRequest  : TRESTRequest;
-    FUrl: string;
     function GetUrl: string;
     function CustomUrl(const AUrl: string): IRepositoriesFinder;
     function DateRange(const ABeginDate, AEndDate: string): IRepositoriesFinder; overload;
@@ -50,7 +48,7 @@ Type
     constructor Create;
     destructor Destroy; override;
     function Get: IFoundResponse;
-    class function New: IRepositoriesFinder;
+    class function New: IRepositoriesFinder; static;
   end;
 
 implementation
@@ -139,7 +137,7 @@ begin
                           [FLanguage, FBeginDate, FEndDate]);
 end;
 
-class function TRepositoriesFinder.New: TRepositoriesFinder;
+class function TRepositoriesFinder.New: IRepositoriesFinder;
 begin
   Result := TRepositoriesFinder.Create;
 end;
@@ -147,13 +145,16 @@ end;
 function TRepositoriesFinder.Timeout(const ATimeout: integer): IRepositoriesFinder;
 begin
   Result := Self;
-  FRESTClient.ReadTimeout :=  ATimeout;
+  if ATimeout > 300000 then
+    FRESTClient.ReadTimeout := 300000
+  else
+    FRESTClient.ReadTimeout :=  ATimeout;
 end;
 
 function TRepositoriesFinder.Token(const AToken: string): IRepositoriesFinder;
 begin
   Result := Self;
-  FRESTClient.SetHTTPHeader('Authorization', 'token ' + FToken);
+  FRESTClient.SetHTTPHeader('Authorization', 'token ' + AToken);
 end;
 
 function TRepositoriesFinder.UserAgent(
