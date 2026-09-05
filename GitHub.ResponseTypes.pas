@@ -14,7 +14,7 @@ USES
 
 type
 
- TRepositryLicense = class
+ TLicense = class
  private
    [JsonName('key')]
    FKey: string;
@@ -35,7 +35,7 @@ type
  end;
 
   TRepositoryOwner = class
-  Protected
+  Private
     [JsonName('login')]
 		FLogin             : String;
     [JsonName('id')]
@@ -96,7 +96,7 @@ type
 		property SiteAdmin: Boolean read FSiteAdmin write FSiteAdmin;
   end;
 
-  TFoundRepository = class
+  TRepositoryInfo = class
   private
     [JsonName('id')]
     FId: UInt64;
@@ -237,7 +237,7 @@ type
     [JsonName('open_issues_count')]
     FOpenIssuesCount: Integer;
     [JsonName('license')]
-    FLicense: TRepositryLicense;
+    FLicense: TLicense;
     [JsonName('allow_forking')]
     FAllowForking: Boolean;
     [JsonName('is_template')]
@@ -332,7 +332,7 @@ type
     property Archived: Boolean read FArchived write FArchived;
     property Disabled: Boolean read FDisabled write FDisabled;
     property OpenIssuesCount: Integer read FOpenIssuesCount write FOpenIssuesCount;
-    property License: TRepositryLicense read FLicense write FLicense;
+    property License: TLicense read FLicense write FLicense;
     property AllowForking: Boolean read FAllowForking write FAllowForking;
     property IsTemplate: Boolean read FIsTemplate write FIsTemplate;
     property WebCommitSignoffRequired: Boolean read FWebCommitSignoffRequired write FWebCommitSignoffRequired;
@@ -355,14 +355,14 @@ implementation
 
 { TFoundRepository }
 
-constructor TFoundRepository.Create;
+constructor TRepositoryInfo.Create;
 begin
   inherited Create;
   FOwner := TRepositoryOwner.Create;
-  FLicense := TRepositryLicense.Create;
+  FLicense := TLicense.Create;
 end;
 
-destructor TFoundRepository.Destroy;
+destructor TRepositoryInfo.Destroy;
 begin
   FOwner.Free;
   FLicense.Free;
