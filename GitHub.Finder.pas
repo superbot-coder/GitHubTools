@@ -154,7 +154,10 @@ end;
 function TRepositoriesFinder.Token(const AToken: string): IRepositoriesFinder;
 begin
   Result := Self;
-  FRESTClient.SetHTTPHeader('Authorization', 'Bearer ' + AToken);
+  if Atoken.IsEmpty then
+    FRESTRequest.Params.Delete('Authorization')
+  else
+    FRESTRequest.Params.AddHeader('Authorization', 'Bearer ' + AToken);
 end;
 
 function TRepositoriesFinder.UserAgent(
