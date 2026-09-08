@@ -28,9 +28,11 @@ type
     function CustomUrl(const AUrl: string): IRepositoriesFinder;
     function DateRange(const ABeginDate, AEndDate: string): IRepositoriesFinder; overload;
     function DateRange(const ABegindate, AEndDate: TDate): IRepositoriesFinder; overload;
+    function DateRangeEnabled(Value: Boolean): IRepositoriesFinder;
     function Get: IFoundResponse;
     function GetUrl: string;
     function Language(const ALanguage: string): IRepositoriesFinder;
+    function Search(const ASearchStr: string): IRepositoriesFinder;
     function Timeout(const ATimeout: integer): IRepositoriesFinder;
     function Token(const AToken: string): IRepositoriesFinder;
     function UserAgent(const AUserAgent: string): IRepositoriesFinder;

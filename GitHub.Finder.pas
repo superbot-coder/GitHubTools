@@ -10,8 +10,8 @@ unit GitHub.Finder;
 interface
 
 USES
-  System.SysUtils, System.JSON, REST.Client, REST.Json, REST.Types,
-  GitHub.FinderIntf;
+  System.SysUtils, System.Generics.Collections, System.JSON, REST.Client,
+  REST.Json, REST.Types, GitHub.FinderIntf;
 
 Type
 
@@ -32,22 +32,29 @@ Type
   TRepositoriesFinder = class(TInterfacedObject, IRepositoriesFinder)
   private
     FBeginDate: string;
+    FDateRangeEnabled: boolean;
     FEndDate: string;
     FLanguage: string;
+    FSearch: string;
+    FCreated: string;
     FRESTClient: TRESTClient;
     FRESTRequest  : TRESTRequest;
-    function GetUrl: string;
-    function CustomUrl(const AUrl: string): IRepositoriesFinder;
-    function DateRange(const ABeginDate, AEndDate: string): IRepositoriesFinder; overload;
-    function DateRange(const ABegindate, AEndDate: TDate): IRepositoriesFinder; overload;
-    function Timeout(const ATimeout: integer): IRepositoriesFinder;
-    function Token(const AToken: string): IRepositoriesFinder;
-    function Language(const ALanguage: string): IRepositoriesFinder;
-    function UserAgent(const AUserAgent: string): IRepositoriesFinder;
+    function RemoveSpeace(const ValueStr: string): string;
+    function UrlBuild: string;
   public
     constructor Create;
     destructor Destroy; override;
     function Get: IFoundResponse;
+    function CustomUrl(const AUrl: string): IRepositoriesFinder;
+    function DateRange(const ABeginDate, AEndDate: string): IRepositoriesFinder; overload;
+    function DateRange(const ABegindate, AEndDate: TDate): IRepositoriesFinder; overload;
+    function DateRangeEnabled(Value: Boolean): IRepositoriesFinder;
+    function GetUrl: string;
+    function Language(const ALanguage: string): IRepositoriesFinder;
+    function Search(const ASearchStr: string): IRepositoriesFinder;
+    function Timeout(const ATimeout: integer): IRepositoriesFinder;
+    function Token(const AToken: string): IRepositoriesFinder;
+    function UserAgent(const AUserAgent: string): IRepositoriesFinder;
     class function New: IRepositoriesFinder; static;
   end;
 
@@ -62,7 +69,9 @@ begin
   inherited Create;
   FBeginDate := FormatDateTime('yyyy-mm-dd', Now);
   FEndDate   := FormatDateTime('yyyy-mm-dd', Now);
-  FLanguage  := 'Delphi';
+  FCreated   := '+Created:' + FBeginDate + '..' + FEndDate;
+  FDateRangeEnabled := false;
+  FLanguage  := '';
 
   FRESTClient := TRESTClient.Create(Nil);
   FRESTRequest := TRESTRequest.Create(Nil);
@@ -71,9 +80,8 @@ begin
   FRESTClient.ReadTimeout := 5000;
   FRESTClient.UserAgent := 'Repositories Finder';
   FRESTClient.Accept := 'application/vnd.github.v3+json'; //CONTENTTYPE_APPLICATION_JSON;
-  FRESTClient.BaseURL := Format('https://api.github.com/search/repositories?' +
-                                 'q=language:%s+created:%s..%s&sort=created&order=desc&per_page=100',
-                                  [FLanguage, FBeginDate, FEndDate]);
+  FRESTClient.BaseURL := UrlBuild;
+
 end;
 
 destructor TRepositoriesFinder.Destroy;
@@ -108,38 +116,61 @@ function TRepositoriesFinder.DateRange(const ABeginDate,
   AEndDate: TDate): IRepositoriesFinder;
 begin
   Result := Self;
-  FBeginDate := FormatDateTime('yyyy-mm-dd', ABeginDate);
-  FEndDate := FormatDateTime('yyyy-mm-dd', AEndDate);
-  FRESTClient.BaseURL := Format('https://api.github.com/search/repositories?' +
-                                 'q=language:%s+created:%s..%s&sort=created&order=desc&per_page=100',
-                                  [FLanguage, FBeginDate, FEndDate]);
+  FCreated := '+Created:' + FormatDateTime('yyyy-mm-dd', ABeginDate) + '..' +
+                            FormatDateTime('yyyy-mm-dd', AEndDate);
+  FRESTClient.BaseURL := UrlBuild;
+end;
+
+function TRepositoriesFinder.DateRangeEnabled(
+  Value: Boolean): IRepositoriesFinder;
+begin
+  FDateRangeEnabled := Value;
 end;
 
 function TRepositoriesFinder.DateRange(const ABeginDate,
   AEndDate: string): IRepositoriesFinder;
 begin
   Result := Self;
-  FBeginDate := ABeginDate;
-  FEndDate   := AEndDate;
-  FRESTClient.BaseURL := Format('https://api.github.com/search/repositories?' +
-                                 'q=language:%s+created:%s..%s&sort=created&order=desc&per_page=100',
-                                  [FLanguage, FBeginDate, FEndDate]);
-
+  FCreated   := '+created:' + ABeginDate + '..' + AEndDate;
+  FRESTClient.BaseURL := UrlBuild;
 end;
 
 function TRepositoriesFinder.Language(
   const ALanguage: string): IRepositoriesFinder;
 begin
   Result := Self;
-  FLanguage := ALanguage;
-  FRESTClient.BaseURL := Format('https://api.github.com/search/repositories?' +
-                         'q=language:%s+created:%s..%s&sort=created&order=desc&per_page=100',
-                          [FLanguage, FBeginDate, FEndDate]);
+  if ALanguage.IsEmpty then
+    FLanguage := ''
+  else
+    FLanguage := '+language:' + ALanguage;
+  FRESTClient.BaseURL := UrlBuild;
 end;
 
 class function TRepositoriesFinder.New: IRepositoriesFinder;
 begin
   Result := TRepositoriesFinder.Create;
+end;
+
+function TRepositoriesFinder.RemoveSpeace(const ValueStr: string): string;
+begin
+  Result := '';
+  var AList := ValueStr.Trim.Split([' ']);
+  for var i:=0 to High(AList) do
+  begin
+    if AList[i].IsEmpty then
+      Continue;
+    if i = 0 then
+      Result := Result + Alist[i]
+    else
+      Result := Result + '+' + Alist[i];
+  end;
+end;
+
+function TRepositoriesFinder.Search(
+  const ASearchStr: string): IRepositoriesFinder;
+begin
+  FSearch := RemoveSpeace(ASearchStr);
+  FRESTClient.BaseURL := UrlBuild;
 end;
 
 function TRepositoriesFinder.Timeout(const ATimeout: integer): IRepositoriesFinder;
@@ -158,6 +189,18 @@ begin
     FRESTRequest.Params.Delete('Authorization')
   else
     FRESTRequest.Params.AddHeader('Authorization', 'Bearer ' + AToken);
+end;
+
+function TRepositoriesFinder.UrlBuild: string;
+var
+  LCreated: String;
+begin
+  LCreated := '';
+  if FDateRangeEnabled then
+    LCreated := FCreated;
+
+  Result := Format('https://api.github.com/search/repositories?q=%s%s%s&sort=created&order=desc',
+                                  [FSearch, FLanguage, LCreated]);
 end;
 
 function TRepositoriesFinder.UserAgent(
