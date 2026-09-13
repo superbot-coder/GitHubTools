@@ -101,8 +101,9 @@ var DtBgn := StrToDate('01.01.2026'); // TDate
 var DtEnd := StrToDate('03.01.2026'); // TDate
 
 var Response := TRepositoriesFinder.New.Search('Tetris')
+                                   .DateRangeEnabled(true)
                                    .DateRange(DtBgn, DtEnd)
-                                   .DateRange(true).Get;
+                                   .Get;
                                    
 ``` 
 
@@ -119,8 +120,9 @@ USES
 var ReposInfo := TResponseInfo;
 var Response := TRepositoriesFinder.New
                                    .Search('Tetris')
+                                   .DateRangeEnabled(true)
                                    .DateRange(DtBgn, DtEnd)
-                                   .DateRange(true).Get;
+                                   .Get;
 var LReposArray := Resp.RepositoriesArray;
 
 if Assigned(LReposArray) then
