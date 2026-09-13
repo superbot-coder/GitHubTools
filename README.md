@@ -2,7 +2,7 @@
 
 ### Мини библиотека на Delphi это инструменты для работы с GitHub: поиск репозиториев. 
 
-![SreenShot](images/GitHubTools.png.png)
+![SreenShot](images/GitHubTools.png)
 
 ## **Модуль интерфейсов GitHub.FinderIntf.pas**
 
