@@ -54,7 +54,8 @@ var
   LReposArray: TJSONArray;
   Url: string;
 begin
-  Url := 'https://api.github.com/search/repositories?' +                                    'q=language:Delphi+created:2026-01-01..2026-09-11&per_page=100';
+  Url := 'https://api.github.com/search/repositories?' +
+         'q=language:Delphi+created:2026-01-01..2026-09-11&per_page=100';
   ReposFinder := TRepositoriesFinder.Create;
   // в качестве примера настраиваем все параметры
   // Search('Tetris') - Задает строку с параметром поиска
@@ -64,7 +65,8 @@ begin
                      .DateRange('2026-01-01', '2026-01-10')
                      
                      // параметр, который разарешает/запрещает поиск в диапазоне
-                     // заданных дат, если будет устнановлено значение False т.е.                       // запрещено, то поиск будет осуществляться за все время 
+                     // заданных дат, если будет устнановлено значение False т.е.
+                     // запрещено, то поиск будет осуществляться за все время 
                      .DateRangeEnabled(True)
                      
                      // Если не задать то по умолчанию парметр Delphi
