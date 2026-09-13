@@ -97,7 +97,7 @@ end;
 var DtBgn := StrToDate('01.01.2026'); // TDate
 var DtEnd := StrToDate('03.01.2026'); // TDate
 
-var Response := TRepositoriesFinder.New.DateRange(DtBgn, DtEnd).Get;
+var Response := TRepositoriesFinder.New.DateRange(DtBgn, DtEnd).DateRange(true).Get;
                                    
 ``` 
 
@@ -112,7 +112,7 @@ USES
 
 // .............
 var ReposInfo := TResponseInfo;
-var Response := TRepositoriesFinder.New.DateRange(DtBgn, DtEnd).Get;
+var Response := TRepositoriesFinder.New.DateRange(DtBgn, DtEnd).DateRange(true).Get;
 var LReposArray := Resp.RepositoriesArray;
 
 if Assigned(LReposArray) then
