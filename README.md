@@ -16,6 +16,7 @@
 | `function Get: IFoundResponse`                                                                                                                                                        | Выполняет собственно сам запрос и возвращает результат в **`IFoundResponse`**                                                               |
 | `function GetUrl: string`                                                                                                                                                             | Возвращает текущий Url                                                                                                                      |
 | `function Language(const ALanguage: string): IRepositoriesFinder`                                                                                                                     | Задает параметр языка поиска репозитория, т.е. на каком языке программирования разработан проект: Delphi, Python, JAVA, JS, C/C++/C# и т.д. |
+| `function Search(const ASearchStr: string): IRepositoriesFinder`                                                                                                                      | Функция задает строку с параметром поиска, например: "Tetris" - значит будут найдены проекты содержащие такое название.                     |
 | `function Timeout(const ATimeout: integer): IRepositoriesFinder`                                                                                                                      | Изменяет параметр во внутреннем классе `RESTClient.ReadTimeout`                                                                             |
 | `function Token(const AToken: string): IRepositoriesFinder`                                                                                                                           | Устанавливает токен авторизации полученный в личном кабинете GitHub                                                                         |
 | `function UserAgent(const AUserAgent: string): IRepositoriesFinder`                                                                                                                   | Позволяет изменить UserAgent, который установлен по умолчанию                                                                               |
@@ -55,7 +56,9 @@ begin
   Url := 'https://api.github.com/search/repositories?' +                                    'q=language:Delphi+created:2026-01-01..2026-09-11&per_page=100';
   ReposFinder := TRepositoriesFinder.Create;
   // в качестве примера настраиваем все параметры
-  Resp := ReposFinder.UserAgent('Repositories-Finder') // Не обязательный                               // Если параметр не задать то по умочанию будет текущая дата
+  // Search('Tetris') - Задает строку с параметром поиска
+  Resp := ReposFinder.Search('Tetris')
+                     .UserAgent('Repositories-Finder') // Не обязательный                               // Если параметр не задать то по умочанию будет текущая дата
                      .DateRange('2026-01-01', '2026-01-10')
                      // параметр, который разарешает/запрещает поиск в диапазоне                        // заданных дат, если будет устнановлено значение False т.е.                       // запрещено, то поиск будет осуществляться за все время 
                      .DateRangeEnabled(True)
@@ -97,7 +100,9 @@ end;
 var DtBgn := StrToDate('01.01.2026'); // TDate
 var DtEnd := StrToDate('03.01.2026'); // TDate
 
-var Response := TRepositoriesFinder.New.DateRange(DtBgn, DtEnd).DateRange(true).Get;
+var Response := TRepositoriesFinder.New.Search('Tetris')
+                                   .DateRange(DtBgn, DtEnd)
+                                   .DateRange(true).Get;
                                    
 ``` 
 
@@ -112,15 +117,18 @@ USES
 
 // .............
 var ReposInfo := TResponseInfo;
-var Response := TRepositoriesFinder.New.DateRange(DtBgn, DtEnd).DateRange(true).Get;
+var Response := TRepositoriesFinder.New
+                                   .Search('Tetris')
+                                   .DateRange(DtBgn, DtEnd)
+                                   .DateRange(true).Get;
 var LReposArray := Resp.RepositoriesArray;
 
 if Assigned(LReposArray) then
 begin
   if LReposArray.Count > 0 then
   begin
-      // Метод, который сериализует TJSONObject в TFoundRepository
-	  RespInfo := TJson.JsonToObject<TFoundRepository>(LReposArray[0],
+      // Метод, который сериализует TJSONObject в TResponseInfo
+	  RespInfo := TJson.JsonToObject<TResponseInfo>(LReposArray[0],
 	                                [joDateIsUTC, joIndentCaseLower]);	  
       Show('HtmlUrl' + ReposInfo.HtmlUrl);                          
 	  Show('FullName' + ReposInfo.FullName);
