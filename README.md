@@ -34,6 +34,7 @@
 
 #### **TRepositoryInfo** - Класс  который содержит все название всех полей с данными которые передаются в ответе JSON GitHub   
 
+
 # **ПРИМЕРЫ**
 
 ### **Пример 1 / example 1:**
@@ -77,7 +78,7 @@ begin
                      
                      // не обязательный параметр, если не задать? то соединение 
                      // будет без авторизации с ограничениями
-                     .Token('ghp_XXXXXXXXXXSJQSaaU8SYURMzPsXXXXXXXXXX')
+                     .Token('ghp_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
                      
                      // не обязательный пармет, нужен если нужно изменить значения
                      // по умолчанию на свой особенный Url 
@@ -155,3 +156,12 @@ begin
 end;
 
 ```
+
+---
+
+### Требования / Requirements 
+RAD Studio 11 и выше
+
+Telegram channel: https://t.me/delphi_solutions
+Telegram chat: https://t.me/delphi_solutions_chat
+DONATE ME  https://t.me/delphi_solutions_donate
