@@ -136,7 +136,7 @@ var Response := TRepositoriesFinder.New
                                    .DateRangeEnabled(true)
                                    .DateRange(DtBgn, DtEnd)
                                    .Get;
-var LReposArray := Resp.RepositoriesArray;
+var LReposArray := Response.RepositoriesArray;
 
 if Assigned(LReposArray) then
 begin
