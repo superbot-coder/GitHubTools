@@ -163,5 +163,7 @@ end;
 RAD Studio 11 и выше
 
 Telegram channel: https://t.me/delphi_solutions
+
 Telegram chat: https://t.me/delphi_solutions_chat
+
 DONATE ME  https://t.me/delphi_solutions_donate
