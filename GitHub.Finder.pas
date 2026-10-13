@@ -46,8 +46,8 @@ Type
     destructor Destroy; override;
     function Get: IFoundResponse;
     function CustomUrl(const AUrl: string): IRepositoriesFinder;
-    function DateRange(const ABeginDate, AEndDate: string): IRepositoriesFinder; overload;
-    function DateRange(const ABegindate, AEndDate: TDate): IRepositoriesFinder; overload;
+    function DateRange(const ADateBegin, ADateEnd: string): IRepositoriesFinder; overload;
+    function DateRange(const ADateBegin, ADateEnd: TDate): IRepositoriesFinder; overload;
     function DateRangeEnabled(Value: Boolean): IRepositoriesFinder;
     function GetUrl: string;
     function Language(const ALanguage: string): IRepositoriesFinder;
@@ -112,12 +112,12 @@ begin
   FRESTClient.BaseURL := AUrl;
 end;
 
-function TRepositoriesFinder.DateRange(const ABeginDate,
-  AEndDate: TDate): IRepositoriesFinder;
+function TRepositoriesFinder.DateRange(const ADateBegin,
+  ADateEnd: TDate): IRepositoriesFinder;
 begin
   Result := Self;
-  FCreated := '+Created:' + FormatDateTime('yyyy-mm-dd', ABeginDate) + '..' +
-                            FormatDateTime('yyyy-mm-dd', AEndDate);
+  FCreated := '+Created:' + FormatDateTime('yyyy-mm-dd', ADateBegin) + '..' +
+                            FormatDateTime('yyyy-mm-dd', ADateEnd);
   FRESTClient.BaseURL := UrlBuild;
 end;
 
@@ -127,11 +127,11 @@ begin
   FDateRangeEnabled := Value;
 end;
 
-function TRepositoriesFinder.DateRange(const ABeginDate,
-  AEndDate: string): IRepositoriesFinder;
+function TRepositoriesFinder.DateRange(const ADateBegin,
+  ADateEnd: string): IRepositoriesFinder;
 begin
   Result := Self;
-  FCreated   := '+created:' + ABeginDate + '..' + AEndDate;
+  FCreated   := '+created:' + ADateBegin + '..' + ADateEnd;
   FRESTClient.BaseURL := UrlBuild;
 end;
 

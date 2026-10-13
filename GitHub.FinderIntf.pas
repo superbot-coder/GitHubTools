@@ -26,8 +26,8 @@ type
   IRepositoriesFinder = interface(IInvokable)
   ['{E419CFF7-E313-44F8-AFE7-CCF3951D1C1D}']
     function CustomUrl(const AUrl: string): IRepositoriesFinder;
-    function DateRange(const ABeginDate, AEndDate: string): IRepositoriesFinder; overload;
-    function DateRange(const ABegindate, AEndDate: TDate): IRepositoriesFinder; overload;
+    function DateRange(const ADateBegin, ADateEnd: string): IRepositoriesFinder; overload;
+    function DateRange(const ADateBegin, ADateEnd: TDate): IRepositoriesFinder; overload;
     function DateRangeEnabled(Value: Boolean): IRepositoriesFinder;
     function Get: IFoundResponse;
     function GetUrl: string;
